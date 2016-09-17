@@ -1,22 +1,11 @@
 
 
-options(stringsAsFactors = F)
-
-
-### SETTINGS ##############################################################
-
-output.folder <- "~/Google Drive/Brain evolution/outputs/"
-input.folder <- "~/Google Drive/Brain evolution/inputs/data/"
-script.folder <- "~/Documents/workflows/Brain_size_evolution/"
-rmacro.folder <- "~/Documents/workflows/rmacroRDM/R/"
-
-
-
 ### Packages ##############################################################
 
 source(paste(script.folder, "pkgs.R", sep = ""))
-if(install.pkgs){install.packages(pkgs)}
-lapply(pkgs, require, character.only = TRUE)
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(pkgs, character.only = T)
+
 
 
 ### FUNCTIONS ##############################################################
@@ -47,11 +36,13 @@ codeVars <- function(dat, data.ID, metadata = metadata, vnames = vnames){
 ### FILES ##############################################################
 
 metadata <- read.csv(paste(input.folder, "metadata/","metadata.csv", sep = ""), 
-                     stringsAsFactors = F, fileEncoding = "mac", na.strings=c("","NA")) %>% 
-  apply(2, FUN = trimws) %>% data.frame(stringsAsFactors = F)
+                     stringsAsFactors = F, fileEncoding = "mac", 
+                     na.strings=c("","NA", " ", "-999"), strip.white = T, 
+                     blank.lines.skip = T)
+
 
 
 vnames <- read.csv(paste(input.folder, "metadata/","vnames.csv", sep = ""), 
-                   stringsAsFactors = F, fileEncoding = "mac", , na.strings=c("","NA")) %>% 
-  apply(2, FUN = trimws) %>% data.frame(stringsAsFactors = F)
-vnames[vnames == ""] <- NA
+                   stringsAsFactors = F, fileEncoding = "mac", 
+                   na.strings=c("","NA", " ", "-999"), strip.white = T, 
+                   blank.lines.skip = T)

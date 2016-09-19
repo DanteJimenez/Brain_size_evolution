@@ -15,6 +15,8 @@ output:
 ***
 <br>
 
+Raw code from this .Rmd available [here](https://raw.githubusercontent.com/annakrystalli/Brain_size_evolution/master/match_workflow.R)
+
 # setup
 
 ```{r global-setup, echo = F}
@@ -34,7 +36,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 First source the rmacroRDM functions. Currently the best way is to just source from github using `RCulr:getURL()`.
 
-***WARNING: Under continuous development***
+***WARNING: Repo under continuous development***
 
 ```{r source-rmacroRDM, message=FALSE, warning=FALSE}
 require(RCurl)
@@ -80,12 +82,13 @@ init_db(var.vars = c("var", "value", "data.ID"),
                     spp.list_src = NULL)
 ```
 
+I actually want to set **"D0"** as the file from which to extract the spp.list in a bit so I set `spp.list_src = "D0"`.
 
 ```{r master-configuration, eval=T}
 init_db(spp.list_src = "D0")
 ```
 
-The function appends the objects specified in the function to environment `master_config` at position 2 in the search path (note position of `GlobalEnvironment` = 1). 
+The function appends the given arguments to environment `master_config` at position 2 in the search path (note position of `GlobalEnvironment` = 1). 
 
 Here's a list of the values of the objects we just attached as configurations:
 ```{r print-master_config, echo=FALSE, purl=FALSE}
@@ -129,7 +132,7 @@ The functions take advantage of the structure of the file.sytem to automate load
 
 ## make fcodes (folder codes) vector
 
-The `fcodes` vector specifies the details of folders in `pre/` and `post/` `input.folder` folders. It also creates appropriate code prefixes for each type of `data` or `meta.var` sheet. Note that "D" is reserved for `data` files, "R" for `ref` files and "N" for `n` files.
+The `fcodes` vector specifies the details of folders in `pre/` and `post/` `input.folder` folders. It also creates appropriate code prefixes for each type of `data` or `meta.var` sheet. Note that **"D"** is reserved for **`data`** files, **"R"** for **`ref`** files and **"N"** for **`n`** files.
 
 ```{r ensure-fcodes}
 fcodes <- ensure_fcodes(meta.vars)
@@ -159,10 +162,11 @@ print(file.names)
 
 ## load system reference files
 
+Load the system reference (sys.ref) files required for data processing.
 ```{r load-sys.ref}
 load_sys.ref(fileEncoding = "mac", view = F)
 ```
-*use `view = T` to open a viewer for each of the sys.ref files
+*use `view = T` to open a viewer for each of the sys.ref files on load.
 
 ### `metadata.csv`
 
@@ -202,7 +206,7 @@ syn.links <- read.csv(text=getURL("https://raw.githubusercontent.com/annakrystal
 
 # process file.system
 
-This step processes the .csv copies of the raw data in the `pre/` folder and writes the processed files as csvs to the `post/` folder, ready to be matched. The processing conserves the file.names throughout. It is important for this step that the *file.system* is correctly populated (ie. `meta.var` data sheets should be named with the same name as the `data` data sheet and in the correct folder). 
+This step processes the `.csv` copies of the raw data in the `pre/` folder and writes the processed files as `.csv` to the `post/` folder, ready to be matched. The processing conserves the file.names throughout. It is important for this step that the file.system is correctly populated (ie. `meta.var` data sheets should be named with the same name as the `data` data sheet and in the correct folder). 
 
 
 
@@ -215,7 +219,7 @@ This step processes the .csv copies of the raw data in the `pre/` folder and wri
     - **files specified in `file.names`** if `file.names` is vector of file names (note that only files available in the file.system are processed).
 - data are loaded, trimmed of whitespace, blank lines and `c("", " ", "NA", "-999")` coded as `NA`s by default.
 - column names is the data are matched to master variable codes through `vnames`
-- if the original dataset contains species details across two columns (*species* and *genus*), data in the columns are concatinated in the form `"genus_species"` and merged into a single `$species` column. ***ensure genus column name in files is matched to `"genus"` in `vnames`.*** 
+- if the original dataset contains species details across two columns (ie *species* and *genus*), data in the columns are concatinated in the form `"genus_species"` and merged into a single `species` column. ***ensure column in files containing genus data is matched to code `genus` in `vnames`.*** 
 
 <br>
 
@@ -223,8 +227,8 @@ This step processes the .csv copies of the raw data in the `pre/` folder and wri
 
 you can include extra processing scripts for individual files by adding them into the `{script.folder}process/` folder. To be loaded correctly, **scripts need to be named appropriately:**
 
-- to source for across *all files* in file.system matching the `file.name`: name script as `file.name`. eg .`"Amniote_Database_Aug_2015.R"`
-- to source for *individual files* in file.system matching the `file.name`: name script as `file.name` append with appropriate `fcode`, eg .`"Amniote_Database_Aug_2015_ref.R"`
+- to source across *all files* in file.system matching the `file.name`: name script as `file.name`. eg .`"Amniote_Database_Aug_2015.R"`
+- to source for *files in a specific folder* in file.system matching the `file.name`: name script as `file.name` appended with appropriate `fcode`, eg .`"Amniote_Database_Aug_2015_ref.R"`
 
 
 ```{r process-csvs, warning=FALSE}
@@ -272,17 +276,16 @@ str(master, max.level = 2, vec.len = 3)
 
 # match new datasets to master
 
-## assign filename to add and create match object from it. 
-The fuction loads the file specified by `filename` in `{input.folder}pre/csv/`. The argument `sub` specified which of the two sets of species to be matched (`spp.list` or `data`) is a subset (ie smaller) than the other. `spp.list` is the same species attached to the master.
+## create match object from file.name. 
+
+The fuction loads the file specified by `filename` in `input.folder/pre/csv/`. The argument `sub` specifies which of the two sets of species to be matched (`spp.list` or `data`) is a subset (ie smaller) than the other. `spp.list` is the spp.list attached to the master.
 ```{r create-m}
 
 filename <- file.names[file.names == "Amniote_Database_Aug_2015.csv"]
 
-m <- matchObj(data.ID = NULL,
-              spp.list = spp.list,
-              data = NULL,
-              sub = "spp.list", file.name = filename, 
-              meta = createMeta(meta.vars)) # use addMeta function to manually add metadata.
+m <- matchObj(file.name = filename,
+              spp.list = master$spp.list,
+              sub = "spp.list") # use addMeta function to manually add metadata.
 
 ```
 

@@ -61,11 +61,9 @@ master <- create_master(spp.list)
 
 filename <- file.names[file.names == "Amniote_Database_Aug_2015.csv"]
 
-m <- matchObj(data.ID = NULL,
-              spp.list = spp.list,
-              data = NULL,
-              sub = "spp.list", file.name = filename, 
-              meta = createMeta(meta.vars)) # use addMeta function to manually add metadata.
+m <- matchObj(file.name = filename,
+              spp.list = master$spp.list,
+              sub = "spp.list") # use addMeta function to manually add metadata.
 
 
 ## ----process-m-----------------------------------------------------------

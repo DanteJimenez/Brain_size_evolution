@@ -248,16 +248,21 @@ supply vector of species names to `species`.
 spp.list <- createSpp.list(species = NULL, 
                            taxo.dat = NULL, 
                            spp.list_src = spp.list_src)
-str(spp.list, vec.len = 3)
 
 ```
+
+```{r print-str-spp.list, purl=FALSE}
+str(spp.list, vec.len = 3)
+```
+
 
 ## create master shell
 
 ```{r create-master}
-
-
 master <- create_master(spp.list)
+```
+
+```{r print-str-master, purl=FALSE}
 str(master, max.level = 2, vec.len = 3)
 ```
 

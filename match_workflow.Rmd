@@ -1,17 +1,20 @@
 ---
 title: "rmacroRDM_workflow"
-author: "Anna Krystalli"
-date: "17 September 2016"
+author: 
+date: "last rendered: `r format(Sys.time(), '%d %B, %Y')`"
 output: 
   html_document:
     toc: true
     toc_float: true
     number_sections: true
     theme: paper
-    self_contained: false
     
     
 ---
+
+***
+<br>
+
 # setup
 
 ```{r global-setup, echo = F}

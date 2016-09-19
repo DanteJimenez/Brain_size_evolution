@@ -6,7 +6,7 @@
 
 To use new **`rmacroRDM` functions** and workflow, see new [vignette](https://cdn.rawgit.com/annakrystalli/Brain_size_evolution/master/match_workflow.nb.html) with project specific working example (file .Rmd in **`match_workflow.Rmd`**)  
 
-Script extracted from **`match_workflow.Rmd`** is saved in **`match_workflow.R`**
+Script extracted from **`match_workflow.Rmd`** is saved in **`match_workflow.R`**. I suggest you do not overwrite this file. Instead, save it with a new name and edit that.
 
 <br>
 

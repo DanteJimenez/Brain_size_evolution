@@ -52,14 +52,10 @@ process_file.system(file.names, fcodes)
 spp.list <- createSpp.list(species = NULL, 
                            taxo.dat = NULL, 
                            spp.list_src = spp.list_src)
-str(spp.list, vec.len = 3)
 
 
 ## ----create-master-------------------------------------------------------
-
-
 master <- create_master(spp.list)
-str(master, max.level = 2, vec.len = 3)
 
 ## ----create-m------------------------------------------------------------
 
